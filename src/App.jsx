@@ -26,6 +26,8 @@ import StudentPortal from './pages/StudentPortal';
 import PortalAnnouncements from './pages/PortalAnnouncements';
 import PortalSchedule from './pages/PortalSchedule';
 import PortalPayments from './pages/PortalPayments';
+import LoginPage from '@/components/auth/LoginPage';
+import { StaticbotLoginBoundary } from '@/components/auth/LoginPage';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, user: currentUser } = useAuth();
@@ -55,6 +57,7 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
+      <Route path="/login" element={<LoginPage />} />
       {isAdmin ? (
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
@@ -95,7 +98,9 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
+          <StaticbotLoginBoundary>
           <AuthenticatedApp />
+          </StaticbotLoginBoundary>
         </Router>
         <Toaster />
       </QueryClientProvider>

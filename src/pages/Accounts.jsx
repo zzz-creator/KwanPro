@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { UserPlus, Mail, Shield, User, Search, Link2, KeyRound } from "lucide-react";
+import { UserPlus, Mail, Shield, User, Search, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +18,6 @@ export default function Accounts() {
   const [inviteRole, setInviteRole] = useState("user");
   const [inviting, setInviting] = useState(false);
   const [linkModal, setLinkModal] = useState(null);
-  const [resettingId, setResettingId] = useState(null);
 
   const load = async () => {
     const [u, s] = await Promise.all([
@@ -67,18 +66,6 @@ export default function Accounts() {
   };
 
   const getLinkedStudent = (user) => students.find(s => s.email === user.email);
-
-  const handleSendPasswordReset = async (user) => {
-    setResettingId(user.id);
-    const loginUrl = window.location.origin;
-    await base44.integrations.Core.SendEmail({
-      to: user.email,
-      subject: "Password Reset Instructions",
-      body: `Hi ${user.full_name || "there"},\n\nYou (or your instructor) requested a password reset for your TKD Dojo Pro account.\n\nTo reset your password, visit the login page and click "Forgot password?":\n${loginUrl}\n\nIf you did not request this, you can safely ignore this email.\n\nThanks,\nTKD Dojo Pro`,
-    });
-    toast.success(`Password reset email sent to ${user.email}`);
-    setResettingId(null);
-  };
 
   if (loading) return <div className="flex justify-center py-16"><div className="w-8 h-8 border-4 border-muted border-t-primary rounded-full animate-spin" /></div>;
 
@@ -209,15 +196,6 @@ export default function Accounts() {
                       className="gap-1.5 text-xs h-8"
                     >
                       <Link2 className="w-3 h-3" /> Link Student
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleSendPasswordReset(user)}
-                      disabled={resettingId === user.id}
-                      className="gap-1.5 text-xs h-8"
-                    >
-                      <KeyRound className="w-3 h-3" /> {resettingId === user.id ? "Sending..." : "Reset Password"}
                     </Button>
                   </div>
                 </div>
